@@ -1,9 +1,29 @@
-# About
-This is the demo site for [Fuwari](https://github.com/saicaca/fuwari).
+---
+title: 关于
+---
 
-::github{repo="saicaca/fuwari"}
+# 关于我
 
-> ### Sources of images used in this site
-> - [Unsplash](https://unsplash.com/)
-> - [星と少女](https://www.pixiv.net/artworks/108916539) by [Stella](https://www.pixiv.net/users/93273965)
-> - [Rabbit - v1.4 Showcase](https://civitai.com/posts/586908) by [Rabbit_YourMajesty](https://civitai.com/user/Rabbit_YourMajesty)
+你好，我是 **Young**，一名人工智能专业的学生。
+
+这里记录我的学习过程、编程练习和生活日常。
+
+## 正在学习
+
+- 算法与数据结构
+- 人工智能与 AI Agent
+- C++ 和 Python
+
+## 兴趣爱好
+
+- 游戏
+- 动漫
+- 探索有趣的技术
+
+## 关于博客
+
+博客使用 Astro 和 Fuwari 主题搭建，部署在 Netlify。
+
+## 找到我
+
+[我的 GitHub](https://github.com/YoungJR1)
