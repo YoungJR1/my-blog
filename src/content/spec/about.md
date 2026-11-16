@@ -2,28 +2,30 @@
 title: 关于
 ---
 
-# 关于我
+# About Me
 
-你好，我是 **Young**，一名人工智能专业的学生。
+Hi! I'm Jinren Yang. You can call me Young or YoungJR.
 
-这里记录我的学习过程、编程练习和生活日常。
+I'm an undergraduate student majoring in Artificial Intelligence at the School of Artificial Intelligence, Jianghan University (JHUN).
 
-## 正在学习
+## Education
 
-- 算法与数据结构
-- 人工智能与 AI Agent
-- C++ 和 Python
+- September 2025 – Present: Undergraduate student in Artificial Intelligence, Jianghan University.
 
-## 兴趣爱好
+## Awards
 
-- 游戏
-- 动漫
-- 探索有趣的技术
+- None yet — working on it!
 
-## 关于博客
+## Hobbies
 
-博客使用 Astro 和 Fuwari 主题搭建，部署在 Netlify。
+- Video games
+- Anime
+- Competitive programming (ICPC/CCPC)
 
-## 找到我
+## About This Blog
 
-[我的 GitHub](https://github.com/YoungJR1)
+This blog is built with [Fuwari](https://github.com/saicaca/fuwari), a static blog template powered by Astro, and hosted on GitHub Pages.
+
+One of my goals is to compete in an ICPC or CCPC regional contest. Here, I share my learning journey, thoughts, and little moments from everyday life.
+
+Thanks for stopping by!
