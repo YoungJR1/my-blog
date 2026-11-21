@@ -137,14 +137,32 @@ const jsonLd = {
             评论
         </h2>
 
-        <script
-            is:inline
-            src="https://utteranc.es/client.js"
-            repo="YoungJR1/my-blog"
-            issue-term="pathname"
-            theme="github-light"
-            crossorigin="anonymous"
-            async
-        ></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@waline/client@3.16.2/dist/waline.css" />
+        <blog-comments class="block" data-path={getPostUrlBySlug(entry.slug)}
+            style="--waline-theme-color: var(--primary); --waline-active-color: var(--primary);">
+        </blog-comments>
+
+        <script is:inline type="module">
+            import { init } from "https://cdn.jsdelivr.net/npm/@waline/client@3.16.2/dist/waline.js";
+
+            if (!customElements.get("blog-comments")) {
+                customElements.define("blog-comments", class extends HTMLElement {
+                    connectedCallback() {
+                        this.comments = init({
+                            el: this,
+                            serverURL: "https://waline-comments-lime.vercel.app",
+                            path: this.dataset.path,
+                            lang: "zh-CN",
+                            dark: "html.dark",
+                            requiredMeta: ["nick", "mail"],
+                        });
+                    }
+
+                    disconnectedCallback() {
+                        this.comments?.destroy();
+                    }
+                });
+            }
+        </script>
     </section>
 </MainGridLayout>
