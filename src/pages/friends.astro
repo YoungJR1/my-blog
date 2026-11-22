@@ -1,84 +1,107 @@
 ---
+import { Icon } from "astro-icon/components";
 import MainGridLayout from "../layouts/MainGridLayout.astro";
 
-// 新增友链时，在这里复制一组 name、url、description、avatar 即可。
 const friends = [
+    {
+        title: "Qlexander",
+        imgurl: "/qlexander.webp",
+        desc: "Hello World",
+        siteurl: "https://qlexander.cn/",
+        relationship: "Relative",
+    },
+    {
+        title: "CrisgLea",
+        imgurl: "https://pub-5ba3d0ad40a24ef592534696f7db2ba7.r2.dev/avatar.png",
+        desc: "即使上升的终点是破灭，也总想传递些什么",
+        siteurl: "https://www.crisglea.top/",
+        relationship: "College Mate",
+    },
 ];
 
-const myInfo = JSON.stringify(
-	{
-		name: "Young's Blog",
-		url: "https://youngjr.cn/",
-		description: "I wanna live I don't wanna die",
-		avatar: "https://youngjr.cn/avatar.png",
-	},
-	null,
-	2,
-);
+const myInfo = [
+    ["title", "Young", "昵称"],
+    ["imgurl", "https://youngjr.cn/avatar.png", "头像"],
+    ["desc", "I wanna live I don't wanna die", "网站描述"],
+    ["siteurl", "https://youngjr.cn/", "网站链接"],
+].map(([key, value, note]) => ({
+    line: key + ": " + JSON.stringify(value) + ",",
+    note,
+}));
+const copyText = myInfo.map(({ line }) => line).join("\n");
 ---
 
-<MainGridLayout title="友链" description="在这里遇见一些有趣的博客，也欢迎交换友情链接。">
-    <section class="card-base friends-page">
-        <header>
-            <p class="eyebrow">FRIENDS</p>
-            <h1>友情链接</h1>
-            <p class="intro">在互联网的一角，遇见有趣的人，记录各自的热爱。</p>
-        </header>
-
+<MainGridLayout title="友链" description="友情链接与本站信息">
+    <section class="card-base friends-page" aria-label="友情链接">
         <div class="friends-grid">
             {friends.map((friend) => (
-                <a class="friend" href={friend.url} target="_blank" rel="noopener noreferrer" aria-label={`访问 ${friend.name} 的博客（新标签页）`}>
-                    <span class="avatar" aria-hidden="true">
-                        <span>{friend.name.slice(0, 1)}</span>
-                        <img src={friend.avatar} alt="" width="64" height="64" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.hidden = true" />
-                    </span>
-                    <div class="friend-info">
-                        <h2>{friend.name}</h2>
-                        <p>{friend.description}</p>
-                        <span class="domain">{new URL(friend.url).hostname.replace(/^www\./, "")}</span>
+                <a class="friend" href={friend.siteurl} target="_blank" rel="noopener noreferrer">
+                    <img src={friend.imgurl} alt="" width="100" height="100" class="avatar" />
+                    <div class="info">
+                        <h2>{friend.title}</h2>
+                        <p>{friend.desc}</p>
+                        {friend.relationship && <p>{friend.relationship}</p>}
                     </div>
-                    <span class="arrow" aria-hidden="true">↗</span>
+                    <span class="arrow" aria-hidden="true">
+                        <Icon name="material-symbols:chevron-right-rounded" />
+                    </span>
                 </a>
             ))}
         </div>
-
-        <section class="exchange" aria-labelledby="exchange-title">
-            <h2 id="exchange-title">交换友链</h2>
-            <p>欢迎来串门！如果你也有一个认真记录学习或生活的个人博客，欢迎交换友链。</p>
-            <p>请提供博客名称、链接、简介和头像地址。你可以通过下面的 GitHub Issues 联系我，添加后我会更新此页。</p>
-            <a class="contact" href="https://github.com/YoungJR1/my-blog/issues/new?title=%E7%94%B3%E8%AF%B7%E4%BA%A4%E6%8D%A2%E5%8F%8B%E9%93%BE" target="_blank" rel="noopener noreferrer">申请交换友链 <span aria-hidden="true">↗</span></a>
-
-            <h3>我的博客信息</h3>
-            <pre tabindex="0" aria-label="我的博客信息 JSON"><code>{myInfo}</code></pre>
-            <p class="note">上面的卡片是本站收录的博客，是否互链以对方网站为准。</p>
-        </section>
+        <div class="exchange">
+            <p>如想交换本站友情链接，请<a href="https://github.com/YoungJR1/my-blog/issues/new?title=申请交换友链">联系我</a>并提供以下格式的信息：</p>
+            <friend-link-info>
+                <div class="code-scroll" tabindex="0" aria-label="本站友链信息">
+                    <ol>{myInfo.map(({ line, note }) => <li><code>{line.padEnd(46)}<span>// {note}</span></code></li>)}</ol>
+                </div>
+                <button type="button" data-copy={copyText} aria-label="复制本站友链信息" title="复制">
+                    <Icon name="material-symbols:content-copy-rounded" />
+                </button>
+                <span class="feedback" role="status"></span>
+            </friend-link-info>
+        </div>
     </section>
 </MainGridLayout>
 
+<script>
+    if (!customElements.get("friend-link-info")) {
+        customElements.define("friend-link-info", class extends HTMLElement {
+            connectedCallback() {
+                const button = this.querySelector("button");
+                const status = this.querySelector('[role="status"]');
+                if (!button || !status) return;
+                button.onclick = async () => {
+                    try {
+                        await navigator.clipboard.writeText(button.dataset.copy ?? "");
+                        status.textContent = "已复制";
+                    } catch {
+                        status.textContent = "请选中并复制";
+                    }
+                };
+            }
+        });
+    }
+</script>
+
 <style>
-    .friends-page { padding: clamp(1.25rem, 4vw, 2.25rem); color: inherit; }
-    .eyebrow { color: var(--primary); font-size: .75rem; font-weight: 700; letter-spacing: .2em; margin-bottom: .5rem; }
-    h1 { font-size: 1.8rem; font-weight: 800; }
-    .intro { opacity: .65; line-height: 1.8; margin-top: .75rem; }
-    .friends-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin: 1.75rem 0 2rem; }
-    .friend { display: flex; align-items: center; gap: 1rem; padding: 1.25rem; border: 1px solid var(--line-divider); border-radius: 1rem; background: var(--btn-card-bg-hover); transition: transform .2s, border-color .2s, background .2s; text-decoration: none; min-width: 0; }
-    .friend:hover { transform: translateY(-3px); border-color: var(--primary); background: var(--btn-regular-bg); }
-    .friend:focus-visible, .contact:focus-visible, pre:focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; }
-    .avatar { position: relative; display: grid; place-items: center; width: 4rem; height: 4rem; flex-shrink: 0; overflow: hidden; border-radius: 50%; background: var(--btn-regular-bg); color: var(--primary); font-size: 1.5rem; font-weight: 700; }
-    .avatar img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-    .friend-info { min-width: 0; flex: 1; }
-    .friend h2 { font-size: 1.05rem; font-weight: 700; overflow-wrap: anywhere; }
-    .friend p { font-size: .875rem; opacity: .7; margin-top: .35rem; line-height: 1.6; overflow-wrap: anywhere; }
-    .domain { display: block; margin-top: .4rem; color: var(--primary); font-size: .75rem; overflow-wrap: anywhere; }
-    .arrow { color: var(--primary); font-size: 1.2rem; flex-shrink: 0; }
-    .exchange { border-top: 1px solid var(--line-divider); padding-top: 1.5rem; }
-    .exchange h2 { font-size: 1.3rem; font-weight: 700; }
-    .exchange p { line-height: 1.9; margin-top: .75rem; opacity: .75; }
-    .contact { display: inline-flex; align-items: center; gap: .75rem; padding: .7rem 1rem; margin-top: 1rem; border-radius: .75rem; background: var(--btn-regular-bg); color: var(--primary); font-weight: 700; text-decoration: none; }
-    .contact:hover { background: var(--btn-regular-bg-hover); }
-    h3 { font-weight: 700; margin-top: 1.75rem; }
-    pre { margin-top: .75rem; padding: 1.25rem; border-radius: .75rem; background: var(--btn-regular-bg); white-space: pre; overflow-x: auto; font-size: .875rem; line-height: 1.8; }
-    .exchange .note { font-size: .8rem; opacity: .55; }
-    @media (max-width: 767px) { .friends-grid { grid-template-columns: 1fr; } }
-    @media (prefers-reduced-motion: reduce) { .friend { transition: none; } .friend:hover { transform: none; } }
+    .friends-page { padding: clamp(1.25rem, 4vw, 2.25rem); }
+    .friends-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.75rem 1.25rem; }
+    .friend { display: grid; grid-template-columns: min(26%, 6.25rem) minmax(0, 1fr) 2rem; gap: .85rem; text-decoration: none; color: inherit; }
+    .avatar { width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; border-radius: .45rem; }
+    .info { padding-block: .15rem; overflow-wrap: anywhere; }
+    .info h2 { font-size: 1rem; font-weight: 700; margin-bottom: .25rem; }
+    .info p { font-size: .85rem; line-height: 1.45; opacity: .7; }
+    .arrow { display: grid; place-items: center; border-radius: .45rem; color: var(--primary); background: var(--btn-regular-bg); font-size: 1.5rem; }
+    .friend:hover .arrow, .friend:focus-visible .arrow { background: var(--btn-regular-bg-hover); }
+    .exchange { border-top: 1px dashed var(--line-divider); margin-top: 1rem; padding-top: clamp(1.5rem, 4vw, 2.5rem); font-size: .9rem; }
+    .exchange a { color: var(--primary); text-decoration: underline; }
+    friend-link-info { display: block; position: relative; margin-top: 1.5rem; padding: .85rem; border-radius: .75rem; color: #f3eef0; background: #1b1519; }
+    .code-scroll { overflow: auto; margin-right: 2.4rem; }
+    ol { margin: 0; padding-left: 2rem; list-style: decimal; font: .8rem/1.7 monospace; }
+    li { white-space: pre; }
+    li::marker { color: #a69aa2; }
+    code span { color: #bdb2b9; }
+    button { position: absolute; top: .5rem; right: .5rem; padding: .45rem; background: #4c454a; color: white; border-radius: .4rem; }
+    .feedback { position: absolute; top: .5rem; right: 2.7rem; background: #1b1519; }
+    @media (max-width: 650px) { .friends-grid { grid-template-columns: minmax(0, 1fr); } }
 </style>
