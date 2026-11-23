@@ -1,7 +1,7 @@
 ---
-title: AtCoder Beginner Contest 484 赛后复盘
+title: AtCoder Beginner Contest 484
 published: 2026-11-14
-description: 赛中通过 A、B、C。复盘 C 题的判断漏洞，以及下一场怎么改。
+description: 赛中通过了A、B、C，后序把剩下的题目与知识点补上
 tags:
   - AtCoder
   - ABC
