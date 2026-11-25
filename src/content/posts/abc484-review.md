@@ -102,4 +102,53 @@ int n;
   }
   cout<<ans<<'\n';
 ```
+## E题：使用树状数组+二分查找找出所有符合的区间并求和其数量
 
+初见这一题时，我先是想到用双层循环暴力模拟，但是觉得不现实，于是就借鉴学习了一下。
+
+先引入树状数组：
+```cpp
+int lowbit(int i){return i&(-i);}
+void add(int i,long long x)
+{
+	while(i<(int)tree.size())
+	{
+		tree[i]+=x;
+        i+=lowbit(i);
+    }
+}
+long long query(int i)
+{
+    long long ans=0;
+    while(i>0)
+    {
+        ans+=tree[i];
+        i-=lowbit(i);
+    }
+    return ans;
+}
+```
+注意这里add中i的范围直接与tree的大小相关。
+
+我们先用s[]记录前缀和，再用`v`处理`s`中的元素，复制排序再去重。tree[]则的对应v[]中元素的数量。在处理s[i]之前，先给tree[]内对应s[0]的元素add(1)。对于每个s[i]，为满足题意使得每个区间在[L,R]内，我们要让`ans`加上所有和为[s[i]-R,s[i]-L](L<=s[i]-x<=R)的旧前缀和，而旧前缀和出现次数存在tree内，用树状数组查出现次数，累加到ans。最后执行add(rank(s[i]),1)供下一轮查找。
+
+核心代码：
+```cpp
+vector<long long> v=s;
+sort(v.begin(),v.end());
+v.erase(unique(v.begin(),v.end()),v.end());
+tree.resize((v.size()+1),0);
+int pos=lower_bound(v.begin(),v.end(),s[0])-v.begin()+1;
+add(pos,1);
+for(int i=1;i<=n;i++)
+{
+	long long LB=s[i]-R;
+	long long RB=s[i]-L;
+	int below=lower_bound(v.begin(),v.end(),LB)-v.begin();
+	int through=upper_bound(v.begin(),v.end(),RB)-v.begin();
+	ans+=query(through)-query(below);
+	int pos=lower_bound(v.begin(),v.end(),s[i])-v.begin()+1;
+	add(pos,1);
+}
+```
+FG就不补了，先去补485，不然跟不上进度了`ヽ(д｀ヽ彡ノ´д)ノ`
